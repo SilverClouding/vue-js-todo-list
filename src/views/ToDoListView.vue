@@ -31,7 +31,7 @@ const { setNoteStatus, deleteNote } = useNotesStore();
           <div class="text-center px-4 py-2 w-full md:w-1/5">Actions</div>
         </div>
       </div>
-      <div class="table--body" v-if="filteredNotes.length > 0">
+      <div class="table--body" v-if="filteredNotes?.length > 0">
         <div v-for="(note, index) in filteredNotes" :key="index" class="flex flex-col md:flex-row table--row odd:bg-blue-100 even:bg-blue-50 transition duration-300">
           <div class="text-left px-4 py-2 text-blue-800 w-full md:w-3/5">
             <span :class="{ 'line-through': note.status === 'done' }">
@@ -135,7 +135,7 @@ export default {
      * Search notes
      */
     searchNotes(){
-      if(!this.search.trim().length){
+      if(!this.search.trim()?.length){
         this.filteredNotes = this.notes;
       } else {
         this.filteredNotes = this.notes.filter(note => note.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1);
