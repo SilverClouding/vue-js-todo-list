@@ -1,37 +1,37 @@
 import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
+//import { useStorage } from '@vueuse/core'
 import router from '@/router';
 
 export const useNotesStore = defineStore({
   id: 'notesStore',
   state: () => ({
-    // notes: [
-    //   {
-    //     id: 1,
-    //     title: "Test note 1",
-    //     description: "",
-    //     category: "personal",
-    //     status: "to-do",
-    //     comment: ""
-    //   },
-    //   {
-    //     id: 2,
-    //     title: "Demo note 2",
-    //     description: "",
-    //     category: "official",
-    //     status: "in-progress",
-    //     comment: ""
-    //   },
-    //   {
-    //     id: 3,
-    //     title: "Other note 3",
-    //     description: "",
-    //     category: "official",
-    //     status: "in-progress",
-    //     comment: ""
-    //   },
-    // ],
-    notes: useStorage('notes', []),
+    notes: [
+      {
+        id: 1,
+        title: "Test note 1",
+        description: "",
+        category: "personal",
+        status: "to-do",
+        comment: ""
+      },
+      {
+        id: 2,
+        title: "Demo note 2",
+        description: "",
+        category: "official",
+        status: "in-progress",
+        comment: ""
+      },
+      {
+        id: 3,
+        title: "Other note 3",
+        description: "",
+        category: "official",
+        status: "in-progress",
+        comment: ""
+      },
+    ],
+    // notes: useStorage('notes', []),
     categories: [
       { value: 'personal', label: "Personal" },
       { value: 'official', label: "Official" }
