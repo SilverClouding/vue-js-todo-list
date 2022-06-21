@@ -1,5 +1,16 @@
 <script setup>
 import NoteForm from '@/components/NoteForm.vue';
+
+const timeInMs = Date.now();
+const isEdit = false;
+const form = {
+            id: timeInMs,
+            title: '',
+            description: '',
+            category: 'personal',
+            status: 'to-do',
+            comment: ''
+        };
 </script>
 <template>
   <div>
@@ -17,24 +28,3 @@ import NoteForm from '@/components/NoteForm.vue';
 
 <style scoped>
 </style>
-<script>
-export default {
-    components: {
-      NoteForm
-    },
-    data(){
-      const timeInMs = Date.now();
-      return  {
-        isEdit: false,
-        form : {
-            id: timeInMs,
-            title: '',
-            description: '',
-            category: 'personal',
-            status: 'to-do',
-            comment: ''
-        }
-      }
-    }
-}
-</script>

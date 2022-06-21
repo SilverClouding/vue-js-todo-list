@@ -4,6 +4,15 @@ import { useNotesStore } from '../stores/notes';
 
 const { categories, statuses } = storeToRefs(useNotesStore());
 const { setNote } = useNotesStore();
+const props = defineProps({
+  isEdit: Boolean,
+  id: Number,
+  title: String,
+  description: String,
+  category: String,
+  status: String,
+  comment: String
+});
 </script>
 <template>
 <div class="note-form mt-12">
@@ -52,8 +61,3 @@ const { setNote } = useNotesStore();
     <button class="px-6 py-2 my-1 bg-blue-500 text-blue-100 border w-full" @click="setNote({ id: id, title: title, description: description, category: category, status: status, comment: comment }, isEdit)">Submit</button>
 </div>
 </template>
-<script>
-export default {
-    props: ['isEdit', 'id', 'title', 'description', 'category', 'status', 'comment']
-}
-</script>

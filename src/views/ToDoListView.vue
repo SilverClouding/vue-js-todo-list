@@ -1,3 +1,78 @@
+<script>
+export default {
+  data() {
+    return {
+      search: '',
+      filteredNotes: this.notes,
+      modalContent: {},
+      modalOpen: false
+    };
+  },
+  methods: {
+    /**
+     * Toggle status dropdown
+     */
+    toggleStatusDropdown(event){
+      if(event.currentTarget.classList.contains('current-status')){
+        event.currentTarget.parentNode.querySelector('.status-dropdown').classList.toggle('hidden');
+      } else {
+        document.querySelectorAll('.status-dropdown') && [...document.querySelectorAll('.status-dropdown')].forEach(elem => { 
+          if(elem.parentNode.querySelector('.current-status') != event.target) elem.classList.add('hidden');
+        });
+      }
+    },
+    /** 
+     * Show view modal
+     */
+    showViewModal(note){
+      let categorylabel = this.categories.find(category => category.value === note.category);
+      let currentStatus = this.statuses.find(status => status.value === note.status);
+      this.modalContent = {
+        title: note.title,
+        description: note.description,
+        category: categorylabel.label,
+        status: currentStatus.label,
+        comment: note.comment
+      };
+      this.modalOpen = true;
+    },
+    /** 
+     * Close view modal
+     */
+    closeViewModal(){
+      this.modalContent = {};
+      this.modalOpen = false;
+    },
+    /**
+     * Search notes
+     */
+    searchNotes(){
+      if(!this.search.trim()?.length){
+        this.filteredNotes = this.notes;
+      } else {
+        this.filteredNotes = this.notes.filter(note => note.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1);
+      }
+    },
+    /**
+     * Get status label by value
+     */
+    getStatusLabelByValue(str) {
+      console.log(this.statuses);
+      let currentStatus = this.statuses.find(status => status.value === str);
+      return currentStatus.label;
+    },
+    /**
+     * Change status of note by index
+     */
+    updateStatus(index) {
+      const statusValues = this.statuses.map(status => status.value);
+      let newIndex = statusValues.indexOf(this.notes[index].status);
+      if (++newIndex > 2) newIndex = 0;
+      this.setNoteStatus(index, statusValues[newIndex]);
+    },
+  },
+};
+</script>
 <script setup>
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia';
@@ -85,79 +160,3 @@ const { setNoteStatus, deleteNote } = useNotesStore();
 <style scoped>
 </style>
 
-<script>
-export default {
-  components: { Modal },
-  data() {
-    return {
-      search: '',
-      filteredNotes: this.notes,
-      modalContent: {},
-      modalOpen: false
-    };
-  },
-  methods: {
-    /**
-     * Toggle status dropdown
-     */
-    toggleStatusDropdown(event){
-      if(event.currentTarget.classList.contains('current-status')){
-        event.currentTarget.parentNode.querySelector('.status-dropdown').classList.toggle('hidden');
-      } else {
-        document.querySelectorAll('.status-dropdown') && [...document.querySelectorAll('.status-dropdown')].forEach(elem => { 
-          if(elem.parentNode.querySelector('.current-status') != event.target) elem.classList.add('hidden');
-        });
-      }
-    },
-    /** 
-     * Show view modal
-     */
-    showViewModal(note){
-      let categorylabel = this.categories.find(category => category.value === note.category);
-      let currentStatus = this.statuses.find(status => status.value === note.status);
-      this.modalContent = {
-        title: note.title,
-        description: note.description,
-        category: categorylabel.label,
-        status: currentStatus.label,
-        comment: note.comment
-      };
-      this.modalOpen = true;
-    },
-    /** 
-     * Close view modal
-     */
-    closeViewModal(){
-      this.modalContent = {};
-      this.modalOpen = false;
-    },
-    /**
-     * Search notes
-     */
-    searchNotes(){
-      if(!this.search.trim()?.length){
-        this.filteredNotes = this.notes;
-      } else {
-        this.filteredNotes = this.notes.filter(note => note.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1);
-      }
-    },
-    /**
-     * Get status label by value
-     */
-    getStatusLabelByValue(str) {
-      console.log(this.statuses);
-      let currentStatus = this.statuses.find(status => status.value === str);
-      return currentStatus.label;
-    },
-    /**
-     * Change status of note by index
-     */
-    updateStatus(index) {
-      const statusValues = this.statuses.map(status => status.value);
-      let newIndex = statusValues.indexOf(this.notes[index].status);
-      if (++newIndex > 2) newIndex = 0;
-      this.setNoteStatus(index, statusValues[newIndex]);
-    },
-  },
-};
-</script>

@@ -1,3 +1,11 @@
+<script setup>
+const props = defineProps({
+  modalOpen: Boolean,
+  modalContent: Object,
+  closeViewModal: Function
+});
+
+</script>
 <template>
 <div :tabindex="modalOpen ? null : -1" :aria-hidden="modalOpen ? false : true" class="content-modal overflow-y-auto overflow-x-hidden fixed inset-0 z-50 w-full h-modal justify-center items-center bg-blue-100" :class="{
                   'hidden': modalOpen !== true,
@@ -25,8 +33,3 @@
     </div>
 </div>
 </template>
-<script>
-export default {
-    props: ['modalOpen', 'modalContent', 'closeViewModal']
-}
-</script>
