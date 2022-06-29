@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 export default {
   data() {
     return {
@@ -57,7 +57,7 @@ export default {
      * Get status label by value
      */
     getStatusLabelByValue(str) {
-      console.log(this.statuses);
+      //console.log(this.statuses);
       let currentStatus = this.statuses.find(status => status.value === str);
       return currentStatus.label;
     },
@@ -72,10 +72,10 @@ export default {
     },
   },
 };
-</script>
+</script> -->
 <script setup>
+import { ref } from "vue";
 import { RouterLink } from 'vue-router'
-import { storeToRefs } from 'pinia';
 import { useNotesStore } from '../stores/notes';
 
 import IconView from '@/components/icons/IconView.vue';
@@ -84,15 +84,83 @@ import IconDelete from '@/components/icons/IconDelete.vue';
 import IconSearch from '@/components/icons/IconSearch.vue';
 
 import Modal from '@/components/Modal.vue';
+ 
+const { statuses, notes, categories, setNoteStatus, deleteNote } = useNotesStore();
 
-const { notes, categories, statuses } = storeToRefs(useNotesStore());
-const { setNoteStatus, deleteNote } = useNotesStore();
+let search = ref("");
+let filteredNotes = notes;
+let modalContent = {};
+let modalOpen = false;
+
+/**
+ * Toggle status dropdown
+ */
+const toggleStatusDropdown = (event) => {
+  if(event.currentTarget.classList.contains('current-status')){
+    event.currentTarget.parentNode.querySelector('.status-dropdown').classList.toggle('hidden');
+  } else {
+    document.querySelectorAll('.status-dropdown') && [...document.querySelectorAll('.status-dropdown')].forEach(elem => { 
+      if(elem.parentNode.querySelector('.current-status') != event.target) elem.classList.add('hidden');
+    });
+  }
+};
+/** 
+ * Show view modal
+ */
+const showViewModal = (note) => {
+  let categorylabel = categories.find(category => category.value === note.category);
+  let currentStatus = statuses.find(status => status.value === note.status);
+  modalContent = {
+    title: note.title,
+    description: note.description,
+    category: categorylabel.label,
+    status: currentStatus.label,
+    comment: note.comment
+  };
+  console.log(modalContent);
+  modalOpen = true;
+};
+/** 
+ * Close view modal
+ */
+const closeViewModal = () => {
+  modalContent = {};
+  modalOpen = false;
+};
+/**
+ * Search notes
+ */
+const searchNotes = () => {
+  if(!search.value.trim().length){
+    filteredNotes = notes;
+  } else {
+    filteredNotes = notes.filter(note => note.title.toLowerCase().indexOf(search.value.toLowerCase()) > -1);
+  }
+  return filteredNotes;
+};
+/**
+ * Get status label by value
+ */
+const getStatusLabelByValue = (str) => {
+  let currentStatus = statuses.find(status => status.value === str);
+  return currentStatus.label;
+};
+/**
+ * Change status of note by index
+ */
+const updateStatus = (index) => {
+  const statusValues = statuses.map(status => status.value);
+  let newIndex = statusValues.indexOf(this.notes[index].status);
+  if (++newIndex > 2) newIndex = 0;
+  this.setNoteStatus(index, statusValues[newIndex]);
+};
+
 </script>
 <template>
   <div @click="toggleStatusDropdown">
     <div class="search-note-wrapper px-6 py-2 my-5 border w-full">
       <div class="relative">
-        <input type="text" class="w-full focus:outline-none" placeholder="Search note..." v-model="search" @keyup="searchNotes()"/>
+        <input type="text" class="w-full focus:outline-none" placeholder="Search note..." v-model="search"/>
         <span class="absolute top-1/2 -translate-y-1/2 -right-2">
           <IconSearch></IconSearch>
         </span>
@@ -106,8 +174,8 @@ const { setNoteStatus, deleteNote } = useNotesStore();
           <div class="text-center px-4 py-2 w-full md:w-1/5">Actions</div>
         </div>
       </div>
-      <div class="table--body" v-if="filteredNotes?.length > 0">
-        <div v-for="(note, index) in filteredNotes" :key="index" class="flex flex-col md:flex-row table--row odd:bg-blue-100 even:bg-blue-50 transition duration-300">
+      <div class="table--body" v-if="searchNotes()?.length > 0">
+        <div v-for="(note, index) in searchNotes()" :key="index" class="flex flex-col md:flex-row table--row odd:bg-blue-100 even:bg-blue-50 transition duration-300">
           <div class="text-left px-4 py-2 text-blue-800 w-full md:w-3/5">
             <span :class="{ 'line-through': note.status === 'done' }">
               {{ note.title }}

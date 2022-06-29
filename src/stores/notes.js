@@ -48,7 +48,7 @@ export const useNotesStore = defineStore({
     }
   },
   actions: {
-    async setNote(note, isEdit, callback) {
+    async setNote(note, isEdit) {
       if(isEdit) {
         const noteIndex = this.notes.findIndex(noteItem => noteItem.id === note.id);
         this.notes[noteIndex] = note;
